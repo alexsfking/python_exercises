@@ -27,15 +27,12 @@ def gridChallenge(grid):
         temp=list(row)
         temp.sort()
         new_grid.append("".join(temp))
-    for row in new_grid:
-        print(row)
     new_grid=list(map(list,zip(*new_grid)))
     for row in new_grid:
-        temp=row
+        temp=list("".join(row))
         temp.sort()
         for i in range(len(temp)):
             if(temp[i]!=row[i]):
-                print(temp, row)
                 return "NO"
     return "YES"
             
