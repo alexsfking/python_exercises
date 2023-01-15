@@ -1,13 +1,18 @@
 #!/bin/python3
 # Enter your code here. Read input from STDIN. Print output to STDOUT
-from bisect import bisect_left
+
+# Implement a simple text editor. The editor initially contains an empty string, S. 
+# Perform Q operations of the following 4 types:
+# 1     append - Append string W to the end of S.
+# 2     delete - Delete the last k characters of S.
+# 3     print - Print the kth character of S.
+# 4     undo - Undo the last (not previously undone) operation of type 1 or 2, reverting S to the state it was in prior to that operation.
 
 class Text_Editor():
     def __init__(self):
         self.operations=[]
         self.stack=[]
         self.s=[]
-        self.s_cumulative=[]
     
     def add_operation(self, op:list):
         self.operations.append(op)
@@ -22,48 +27,29 @@ class Text_Editor():
             return []
         
     def append(self,w:str,allow_undo:bool):
-        if(self.s_cumulative):
-            self.s_cumulative.append(self.s_cumulative[-1]+len(w))
-        else:
-            self.s_cumulative.append(len(w))
         if(allow_undo):
             self.stack.append(["2",len(w)])
-        self.s.append(w)
+        for c in w:
+            self.s.append(c)
+        
     
     def delete_k(self,k:int,allow_undo:bool):
-        for _ in range(k):
-            self.delete(allow_undo)
-        
-    def delete(self,allow_undo:bool):
-        #if(not self.s): return
-        while(not len(self.s[-1])):
-            self.s.pop()
-            self.s_cumulative.pop()
-        #if(not self.s): return
         if(allow_undo):
-            self.stack.append(["1", self.s[-1]])
-        self.s[-1]=self.s[-1][:-1]
-        self.s_cumulative[-1]-=1
-        if(self.s_cumulative[-1]==0):
-            self.s_cumulative.pop()
-            self.s.pop()
+            out=[]
+            for _ in range(k):
+                out.append(self.__delete())
+            self.stack.append(["1","".join(out[::-1])])
+        else:
+            for _ in range(k):
+                self.__delete()
+        
+    def __delete(self)->str:
+        #if(not self.s): return
+        return self.s.pop()
     
     def print_k(self,k:int):
-        index=self.find_lt(k)
         #string=self.s_cumulative[index]
-        try:
-            print(self.s[index][k-1])
-        except Exception as e:
-            print(e)
-            print(self.s[index],k-1)
-    
-    def find_lt(self,x:int):
-        #rightmost value < x
-        #print(self.s_cumulative,x)
-        i=bisect_left(self.s_cumulative,int(x))
-        if(i):
-            return(i-1)
-        return 0   
+        print(self.s[k-1])
     
     def undo(self,allow_undo:bool):
         op=self.stack.pop()
