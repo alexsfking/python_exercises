@@ -6,6 +6,28 @@ import random
 import re
 import sys
 
+'''
+Hackerland is a one-dimensional city with houses aligned at integral locations along a road.
+The Mayor wants to install radio transmitters on the roofs of the city's houses. Each
+transmitter has a fixed range meaning it can transmit a signal to all houses within that
+number of units distance away.
+
+Given a map of Hackerland and the transmission range, determine the minimum number of
+transmitters so that every house is within range of at least one transmitter. Each
+transmitter must be installed on top of an existing house.
+
+Example 1:
+8 2
+7 2 4 6 5 9 12 11
+Sorted: 2 4 5 6 7 9 11 12
+We can cover the entire city by installing 3 transmitters on houses at locations 4, 9, and 12.
+
+Example 2:
+7 2
+9 5 4 2 6 15 12
+Sorted: 2 4 5 6 9 12 15
+We can cover the city by installing 4 transmitters on houses at locations 4, 9, 12, 15.
+'''
 #
 # Complete the 'hackerlandRadioTransmitters' function below.
 #
@@ -14,103 +36,63 @@ import sys
 #  1. INTEGER_ARRAY x
 #  2. INTEGER k
 #
-
-class Transmitters():
-    def __init__(self, houses:list, transmitter_range:int):
-        self.houses=houses
-        self.locations=[] #transmitters house
-        self.locations_address=[] #array indicies for transmitter house
-        self.transmitter_range=transmitter_range
-    
-    def set_transmitter(self,house:int):
-        self.locations.append(house)
-        
-    def get_last_transmitter(self)->int:
-        return self.locations[-1]
-        
-    def set_transmitter_index(self,index:int):
-        self.locations_address.append(index)    
-        
-    def get_last_transmitter_index(self)->int:
-        return self.locations_address[-1]    
-        
-    def get_number_houses(self)->int:
-        return len(self.houses)
-        
-    def is_in_range(self,house:int)->bool:
-        if(self.get_last_transmitter()<house):
-            if(self.get_last_transmitter()+self.transmitter_range>=house):
-                return True
-        elif(self.get_last_transmitter()>house):
-            if(self.get_last_transmitter()-self.transmitter_range<=house):
-                return True
-        elif(self.get_last_transmitter()==house):
-                return True
-        return False
-    
-    def first_index_not_in_range(self)->int:
-        for i in range(self.get_last_transmitter_index()+1,self.get_last_transmitter_index()+1+self.transmitter_range*2):
-            if(not self.is_in_range(self.houses[i])):
-                return i 
-    
-    def is_transmitter_provide_coverage(self,h_index:int,t_index:int)->bool:
-        if(h_index>=t_index):
-            raise ValueError("h_index must be less than t_index")
-        if(self.houses[h_index]<self.houses[t_index]-self.transmitter_range):
-            return False
-        return True
-                
-    def place_transmitter(self)->bool:
-        start=self.first_index_not_in_range()
-        end=start+1+self.transmitter_range
-        if(end>=self.get_number_houses()):
-            self.set_transmitter_index(start)
-            self.set_transmitter(self.houses[start])
-            return False
-        for i in range(start+1,end):
-            if(not self.is_transmitter_provide_coverage(start,i)):
-                self.set_transmitter_index(i-1)
-                self.set_transmitter(self.houses[i-1])
-                return True
-        else:
-                self.set_transmitter_index(i-1)
-                self.set_transmitter(self.houses[i-1])
-                return True           
-        
-            
-    def place_first_transmitter(self)->bool:
-        start=0
-        end=start+1+self.transmitter_range
-        if(end>=self.get_number_houses()):
-            self.set_transmitter_index(start)
-            self.set_transmitter(self.houses[start])
-            return False
-        for i in range(start+1,end):
-            if(not self.is_transmitter_provide_coverage(start,i)):
-                self.set_transmitter_index(i-1)
-                self.set_transmitter(self.houses[i-1])
-                return True
-        else:
-                self.set_transmitter_index(i)
-                self.set_transmitter(self.houses[i])
-                return True
-    
-    def result(self)->int:
-        return len(self.locations)
-            
-    def calculate(self):
-        self.place_first_transmitter()
-        while(self.place_transmitter()):
-            pass
-        print(self.locations)
-        return self.result()
-        
+      
 
 def hackerlandRadioTransmitters(x, k):
-    transmitters = Transmitters(sorted(list(set(x))),k)
-    print(transmitters.houses)
-    return transmitters.calculate()        
-        
+    houses=(sorted(list(set(x))))
+    i, transmitters = 0, 0
+    while i < len(houses):
+        j = i + 1
+        while((j < len(houses)) and (houses[j] - houses[i] <= k)):
+            j += 1
+        transmitters += 1
+        i = j
+        while((i < len(houses)) and (houses[i] - houses[j-1] <= k)):
+            i += 1
+    return transmitters
+
+
+'''
+***Chat-GPT***
+The function hackerlandRadioTransmitters takes two parameters:
+
+    x which is a list of integers representing the positions of the houses in
+    the city. k which is an integer representing the range of the transmitters.
+
+The first thing the function does is to create a sorted list of unique house
+positions using the sorted and set functions. This ensures that we are dealing
+with a sorted list of unique house positions in ascending order.
+
+The function then initializes two variables i and transmitters to 0. The
+variable i will be used to iterate through the houses and transmitters will keep
+track of the number of transmitters that are needed.
+
+The function then enters a while loop that will iterate through the houses. The
+inner while loop checks if the distance between the current house and the next
+house is less than or equal to the range of the transmitter. If it is, then the
+inner loop continues to check the next house until the distance between the
+current house and the next house is greater than the range of the transmitter.
+Once this is true, it means that we have found the farthest house that can be
+covered by the transmitter from the current house. The function then increments
+the transmitters variable and sets i to the next house position.
+
+The function then enters another while loop that checks if there are any houses
+that can still be covered by the current transmitter. If there are, it continues
+to check the next house until the distance between the current house and the
+last house covered by the transmitter is greater than the range of the
+transmitter. Once this is true, it means that we have found the farthest house
+that can be covered by the transmitter from the last house covered. The function
+then sets i to the next house position.
+
+Finally, the function returns the transmitters variable which represents the
+minimum number of transmitters needed to cover all the houses in the city.
+
+Overall, the function is implementing a greedy algorithm that iterates through
+the sorted list of unique house positions and installs a transmitter on the
+farthest house that can be covered by the transmitter from the current house.
+This algorithm ensures that we install the minimum number of transmitters
+required to cover all the houses in the city.
+'''        
         
 
 if __name__ == '__main__':
