@@ -103,6 +103,61 @@ Overall, the most promising improvement would likely be pre-computing the
 maximum values for each subarray using a sliding window algorithm, since this
 can reduce the time complexity of finding the maximum values from O(qn) to O(n +
 q(n-d+1)), which is much faster for large values of n and small values of d.
+
+Here's an implementation of solve that precomputes the maximum values for each
+subarray using a sliding window algorithm:
+
+def solve(arr, queries):
+    n = len(arr)
+    
+    # Precompute maximum values for each subarray of length d
+    max_vals = []
+    for d in range(1, n + 1):
+        window_max_list = []
+        window_indices = deque()
+        for window_end in range(len(arr)):
+            # Remove indices of elements that are outside the current sliding window
+            while window_indices and window_indices[0] <= window_end - d:
+                window_indices.popleft()
+            # Remove indices of elements that are smaller than the current element
+            while window_indices and arr[window_indices[-1]] < arr[window_end]:
+                window_indices.pop()
+            # Add the index of the current element to the deque
+            window_indices.append(window_end)
+            # If the window has reached the desired size, append the maximum value to the list
+            if window_end >= d - 1:
+                window_max_list.append(arr[window_indices[0]])
+        max_vals.append(window_max_list)
+
+    # For each query, find the minimum of the precomputed maximum values
+    out = []
+    for q in queries:
+        out.append(min(max_vals[q-1]))
+
+    return out
+
+In this implementation, we first precompute the maximum values for each subarray
+of length d (where d ranges from 1 to n). We store these maximum values in a
+list of lists called max_vals, where max_vals[d-1] contains the maximum values
+for all subarrays of length d.
+
+To compute the maximum values, we use a sliding window algorithm similar to the
+one used in the original implementation. The main difference is that we iterate
+over all possible subarrays of length d, rather than sliding a window of size d
+over the array. For each subarray, we maintain a deque of indices representing
+the elements in the subarray that might be the maximum. We update this deque as
+we iterate over the array, adding new indices to the back and removing old
+indices from the front. Once the deque contains the indices of the maximum
+elements in the subarray, we append the maximum element to a list of maximum
+values for that subarray.
+
+Finally, for each query, we look up the precomputed maximum values for subarrays
+of length q and return the minimum value.
+
+This implementation has a time complexity of O(n^2), which is the same as the
+original implementation. However, it has the advantage of precomputing the
+maximum values for each subarray, which can make the code faster if there are
+many queries on subarrays of similar lengths.
 '''
 #
 # Complete the 'solve' function below.
