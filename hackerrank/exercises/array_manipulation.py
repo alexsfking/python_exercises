@@ -30,6 +30,17 @@ The largest value is 10 after all operations are performed.
 Return 10
 '''
 
+'''
+***Chat-GPT***
+The provided solution for the arrayManipulation problem uses a naive approach
+where it iterates over all elements in the range specified in each query and
+updates them. This solution has a time complexity of O(N*M), where N is the
+length of the array, and M is the number of queries.
+
+However, we can solve this problem more efficiently using a technique called
+prefix sum, which allows us to update the array in O(M+N) time complexity.
+'''
+
 #
 # Complete the 'arrayManipulation' function below.
 #
