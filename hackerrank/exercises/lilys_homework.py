@@ -13,16 +13,21 @@ import sys
 # The function accepts INTEGER_ARRAY arr as parameter.
 #
 
-def min_swaps(arr)->int:
+def min_swaps(arr, vec)->int:
     swaps=0
+    i=0
+    while i<len(arr):
+        if vec[i]['val']!=arr[i]:
+            vec[vec[i]['idx']],vec[i]=vec[i],vec[vec[i]['idx']]
+            swaps+=1
+        else:
+            i+=1
     return swaps
 
 def lilysHomework(arr):
     # Write your code here
-    sorted_arr_ascending=sorted(arr)
-    sorted_arr_descending=sorted(arr,reverse=True)
     vec = [{"val": arr[i], "idx": i} for i in range(len(arr))]
-    return min(min_swaps(arr,sorted_arr_ascending, vec),min_swaps(arr,sorted_arr_descending, vec))
+    return min(min_swaps(arr, sorted(vec,key=lambda x:x['val'])),min_swaps(arr, sorted(vec,key=lambda x:x['val'], reverse=True)))
 
 
 if __name__ == '__main__':
