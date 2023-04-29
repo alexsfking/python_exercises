@@ -6,6 +6,19 @@ import random
 import re
 import sys
 
+'''
+calculate the minimum number of swaps to make an array "beautiful"
+
+that is the minimum sum of the absolute value of consecutive elements
+
+for example 
+
+0 1 2 3 4 5 requires 0 swaps
+5 4 3 2 1 0 requires 0 swaps
+5 1 2 3 4 0 requires 1 swap
+0 4 3 2 5 1 requires 2 swaps
+'''
+
 #
 # Complete the 'lilysHomework' function below.
 #
@@ -13,7 +26,7 @@ import sys
 # The function accepts INTEGER_ARRAY arr as parameter.
 #
 
-def min_swaps(arr, vec)->int:
+def min_swaps(arr:list[int], vec:list[dict[str,int]])->int:
     swaps=0
     i=0
     while i<len(arr):
@@ -24,10 +37,12 @@ def min_swaps(arr, vec)->int:
             i+=1
     return swaps
 
-def lilysHomework(arr):
+def lilysHomework(arr:list[int])->int:
     # Write your code here
     vec = [{"val": arr[i], "idx": i} for i in range(len(arr))]
-    return min(min_swaps(arr, sorted(vec,key=lambda x:x['val'])),min_swaps(arr, sorted(vec,key=lambda x:x['val'], reverse=True)))
+    ascending_vec=sorted(vec,key=lambda x:x['val'])
+    descending_vec=sorted(vec,key=lambda x:x['val'], reverse=True)
+    return min(min_swaps(arr, ascending_vec),min_swaps(arr, descending_vec))
 
 
 if __name__ == '__main__':
