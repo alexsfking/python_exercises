@@ -19,6 +19,33 @@ for example
 0 4 3 2 5 1 requires 2 swaps
 '''
 
+'''
+This Python code defines a function called lilysHomework that calculates the
+minimum number of swaps needed to make an array "beautiful". A beautiful array
+is defined as an array where the sum of the absolute value of consecutive
+elements is minimum.
+
+The code uses two helper functions: min_swaps and __main__.
+
+The min_swaps function takes in two arguments: an integer list arr and a list of
+dictionaries vec. It returns the minimum number of swaps needed to make the arr
+argument beautiful using the vec list of dictionaries to track the original
+index of each element in the arr. The function swaps adjacent elements in the
+arr to minimize the sum of the absolute value of consecutive elements.
+
+The lilysHomework function takes in an integer list arr as an argument. It
+creates two lists of dictionaries called ascending_vec and descending_vec that
+track the original index of each element in the arr and sorts them in ascending
+and descending order, respectively. The function then returns the minimum of the
+number of swaps needed to make arr beautiful using ascending_vec and
+descending_vec using the min_swaps function.
+
+The code also has a __main__ block that reads in input values, calls the
+lilysHomework function, and writes the output to a file. However, the input and
+output file paths are not specified, and the code is intended to be run in a
+specific environment with the os.environ['OUTPUT_PATH'] variable defined.
+'''
+
 #
 # Complete the 'lilysHomework' function below.
 #
