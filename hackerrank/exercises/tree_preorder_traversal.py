@@ -59,20 +59,15 @@ self.info (the value of the node)
 
 def preOrder(root):
     #Write your code here
-    visited=set()
-    stack=[]
+    stack=[root]
     out=[]
-    stack.append(root)
     while(stack):
-        if(stack[-1] not in visited):
-            out.append(stack[-1].info)
-            visited.add(stack[-1])
-        if(stack[-1].left and stack[-1].left not in visited):
-            stack.append(stack[-1].left)
-        elif(stack[-1].right and stack[-1].right not in visited):
-            stack.append(stack[-1].right)
-        else:
-            stack.pop()
+        node=stack.pop()
+        out.append(node.info)
+        if(node.right):
+            stack.append(node.right)
+        if(node.left):
+            stack.append(node.left)
     print(" ".join(map(str,out)))
 
 
