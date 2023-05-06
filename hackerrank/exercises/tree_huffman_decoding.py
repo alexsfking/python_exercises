@@ -83,6 +83,39 @@ or
 01111001100011010111100
 """
 
+"""
+***Chat-GPT***
+The provided code is an implementation of the Huffman coding algorithm. The
+algorithm generates a binary tree that assigns variable length codes to
+characters based on their frequencies. The more frequent characters are assigned
+shorter codes, and less frequent characters are assigned longer codes.
+
+The code first reads an input string and calculates the frequency of each
+character in the input string. Then, it builds a Huffman tree using the priority
+queue data structure from the queue module. The tree's construction is done by
+iteratively taking the two lowest frequency nodes and creating a new parent node
+with the combined frequency. The parent node's left and right children are set
+to the two nodes selected. This process continues until a single node, which is
+the root of the Huffman tree, remains in the priority queue.
+
+The dfs_hidden function performs a depth-first search of the Huffman tree and
+generates a dictionary that maps each character in the input string to its
+corresponding Huffman code.
+
+The decodeHuff function takes the Huffman tree's root node and a string of
+Huffman codes as input. It first generates a dictionary that maps each Huffman
+code to its corresponding character in the Huffman tree by performing a
+depth-first search of the tree and keeping track of each node's Huffman code
+using a stack data structure. Then, it decodes the Huffman code string into the
+original input string by iteratively checking whether the current substring is a
+valid Huffman code in the dictionary. If it is, the corresponding character is
+appended to the output string, and the start and end indices of the substring
+are updated accordingly.
+
+Overall, the code implements the Huffman coding algorithm and demonstrates how
+it can be used to encode and decode input strings.
+"""
+
 # Enter your code here. Read input from STDIN. Print output to STDOUT
 
 import string
@@ -105,7 +138,7 @@ def decodeHuff(root, s):
             stack.append(node.right)
             node.right.huff=node.huff+"1"
     
-    #decode string into the input string
+    #decode string into the input string assumes valid
     start_index=0
     end_index=1
     out=[]
