@@ -40,6 +40,44 @@ the max sum of a not-necessarily-contiguous group of elements, simply add all
 the positive elements.
 """
 
+"""
+***Chat-GPT***
+The `maxSubarray` function takes an array of integers as input and returns a
+tuple of two integers. The first integer in the tuple represents the maximum sum
+of any contiguous subarray in the input array, and the second integer represents
+the maximum sum of any non-empty subsequence in the input array.
+
+The function starts by initializing two variables, `max_max` and `max_current`,
+to the first element in the input array `arr[0]`. These variables will be used
+to keep track of the maximum subarray sum seen so far and the maximum subarray
+sum ending at the current index, respectively.
+
+The function also initializes a variable `max_subsequence` to the maximum of
+`arr[0]` and 0. This variable will be used to keep track of the maximum
+subsequence sum seen so far.
+
+Then, the function iterates through the remaining elements in the input array
+using a for loop. For each element `arr[i]`, it calculates the maximum subarray
+sum ending at index `i` by taking the maximum of `arr[i]` and `max_current +
+arr[i]`. It updates the `max_current` variable to this value. It also updates
+the `max_max` variable to the maximum of the current `max_max` value and the new
+`max_current` value.
+
+Next, the function checks if the current element `arr[i]` is positive. If it is,
+it adds it to the `max_subsequence` variable. This calculation ensures that the
+`max_subsequence` variable contains the maximum sum of any non-empty subsequence
+in the input array.
+
+Finally, the function checks if all the values in the input array are negative
+by checking if `max_subsequence` is still 0. If so, it sets `max_subsequence` to
+the value of `max_max`. This step ensures that the function correctly handles
+the case where all values in the input array are negative.
+
+The function returns a tuple of `max_max` and `max_subsequence`, which represent
+the maximum sum of any contiguous subarray and the maximum sum of any non-empty
+subsequence in the input array, respectively.
+"""
+
 #
 # Complete the 'maxSubarray' function below.
 #
