@@ -53,64 +53,38 @@ class Node:
        // this is a node of the tree , which contains info as data, left , right
 '''
 
-
-def find_ancestor(ancestors_dict:dict,v1,v2):
-    if(ancestors_dict[v1] != None):
-        v1_current_set:set=ancestors_dict[v1]
-        v1_set=v1_current_set.copy()
-    else:
-        return v1
-    if(ancestors_dict[v2] != None):
-        v2_current_set:set=ancestors_dict[v2]
-        v2_set=v2_current_set.copy()
-    else:
-        return v2
-
-    while(len(v1_current_set) or len(v2_current_set)):
-        if(v1_set.intersection(v2_set)):
-            return max(v1_set.intersection(v2_set))
-        else:
-            temp_set=set()
-            for i in v1_current_set:
-                if(ancestors_dict[i]!=None):
-                    temp_set.update(ancestors_dict[i])
-            v1_current_set=temp_set
-            temp_set=set()
-            for i in v2_current_set:
-                if(ancestors_dict[i]!=None):
-                    temp_set.update(ancestors_dict[i])
-            v2_current_set=temp_set
-
-            v1_set=v1_set.union(v1_current_set)
-            v2_set=v2_set.union(v2_current_set)
-    return None
+from queue import Queue
 
 def lca(root, v1, v2):
     #Enter your code here
-    ancestors_dict=dict()
-    stack=[root]
-    ancestors_dict[root]=None
+    queue=Queue()
+    level=0
+    queue.put(root)
+    root.ancestor=None
+    root.level=level
     node_value_dict=dict()
-    while(stack):
-        node:Node=stack.pop()
+    while(not queue.empty()):
+        node:Node=queue.get()
         node_value_dict[node.info]=node
-        if(node.right):
-            stack.append(node.right)
-            if(node.right in ancestors_dict):
-                ancestors_dict[node.right].add(node)
-            else:
-                ancestors_dict[node.right]={node}
         if(node.left):
-            stack.append(node.left)
-            if(node.left in ancestors_dict):
-                ancestors_dict[node.left].add(node)
-            else:
-                ancestors_dict[node.left]={node}
-    out=find_ancestor(ancestors_dict,node_value_dict[v1],node_value_dict[v2])
-    if(out==None):
-        return root
-    else:
-        return out
+            node.left.ancestor=node
+            node.left.level=node.level+1
+            queue.put(node.left)
+        if(node.right):
+            node.right.ancestor=node
+            node.right.level=node.level+1
+            queue.put(node.right)
+
+    node1=node_value_dict[v1]
+    node2=node_value_dict[v2]
+    while(node1.level<node2.level):
+        node2=node2.ancestor
+    while(node2.level<node1.level):
+        node1=node1.ancestor
+    while(node1!=node2):
+        node1=node1.ancestor
+        node2=node2.ancestor
+    return node1
 
 
 tree = BinarySearchTree()
