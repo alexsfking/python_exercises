@@ -55,17 +55,15 @@ class Node:
 
 from queue import Queue
 
-def lca(root, v1, v2):
-    #Enter your code here
+def modify_tree(root:Node)->dict[int, Node]:
     queue=Queue()
-    level=0
     queue.put(root)
     root.ancestor=None
-    root.level=level
-    node_value_dict=dict()
+    root.level=0
+    value_to_node_dict=dict()
     while(not queue.empty()):
         node:Node=queue.get()
-        node_value_dict[node.info]=node
+        value_to_node_dict[node.info]=node
         if(node.left):
             node.left.ancestor=node
             node.left.level=node.level+1
@@ -74,9 +72,13 @@ def lca(root, v1, v2):
             node.right.ancestor=node
             node.right.level=node.level+1
             queue.put(node.right)
+    return value_to_node_dict
 
-    node1=node_value_dict[v1]
-    node2=node_value_dict[v2]
+def lca(root, v1, v2)->Node:
+    #Enter your code here
+    value_to_node_dict:dict[int, Node]=modify_tree(root)
+    node1:Node=value_to_node_dict[v1]
+    node2:Node=value_to_node_dict[v2]
     while(node1.level<node2.level):
         node2=node2.ancestor
     while(node2.level<node1.level):
