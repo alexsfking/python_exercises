@@ -38,7 +38,34 @@ class BinarySearchTree:
 You are given pointer to the root of the binary search tree and two values v1
 and v2. You need to return the lowest common ancestor (LCA) of v1 and v2 in the
 binary search tree.
+'''
 
+'''
+***Chat-GPT***
+This code defines a binary search tree class, with a method create that adds new
+nodes to the tree in their correct positions according to the binary search tree
+property.
+
+The code then defines a function modify_tree that takes the root node of a
+binary search tree as input, and modifies the tree by adding a level attribute
+to each node, representing the node's depth in the tree, and an ancestor
+attribute, representing the node's parent. The function returns a dictionary
+mapping node values to their corresponding nodes.
+
+Finally, the code defines a function lca that takes the root node of a binary
+search tree and two node values v1 and v2 as input, and returns the lowest
+common ancestor (LCA) of v1 and v2 in the binary search tree.
+
+The lca function first calls the modify_tree function to modify the tree and
+create the value_to_node_dict dictionary. It then retrieves the nodes
+corresponding to v1 and v2 from the dictionary, and uses a series of while loops
+to traverse up the tree from the lower node until both nodes are at the same
+level, and then traverses up the tree from both nodes until they share a common
+ancestor. This common ancestor is then returned.
+
+The main program creates a binary search tree from a list of integers, reads in
+a pair of node values v1 and v2, calls the lca function to compute their LCA,
+and prints the value of the LCA node.
 '''
 
 # Enter your code here. Read input from STDIN. Print output to STDOUT
