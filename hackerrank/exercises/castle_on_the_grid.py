@@ -39,6 +39,9 @@ class Node:
         self.set_impassable(impassable)
         self.__parent=None
     
+    def __lt__(self, other:'Node'):
+        return self.get_f_cost() < other.get_f_cost()
+
     def set_x(self,grid_x:int):
         self.__x=grid_x
 
@@ -97,6 +100,9 @@ class Grid:
                 temp.append(self.grid_string_to_node(grid_arr[row][col],row,col))
             self.grid_nodes_arr.append(temp)
 
+        self.get_start().set_g_cost(0)
+        self.get_start().set_f_cost(0)
+
     def grid_string_to_node(self, grid_string:str, row:int, col:int)->Node:
         impassable=False
         if(grid_string=='X'):
@@ -143,15 +149,15 @@ def a_star(grid)->list[Node]:
             if neighbour in closed_list or neighbour.get_impassable():
                 continue
 
-        g_cost = current_node.get_g_cost() + get_distance(current_node,neighbour)
-        if(g_cost<neighbour.get_g_cost()):
-            neighbour.set_parent(current_node)
-            neighbour.set_g_cost(g_cost)
-            neighbour.set_h_cost(get_distance(neighbour,goal))
-            neighbour.set_f_cost(neighbour.get_g_cost()+neighbour.get_h_cost())
+            g_cost = current_node.get_g_cost() + get_distance(current_node,neighbour)
+            if(g_cost<neighbour.get_g_cost()):
+                neighbour.set_parent(current_node)
+                neighbour.set_g_cost(g_cost)
+                neighbour.set_h_cost(get_distance(neighbour,goal))
+                neighbour.set_f_cost(neighbour.get_g_cost()+neighbour.get_h_cost())
 
-            if(neighbour not in open_list):
-                heapq.heappush(open_list,neighbour)
+                if(neighbour not in open_list):
+                    heapq.heappush(open_list,neighbour)
 
     return None
 
@@ -164,28 +170,32 @@ def get_neighbours(node:Node,grid:Grid)->list[Node]:
                 continue
             x = node.get_x() + dx
             y = node.get_y() + dy
-            if(x<0 or x>=grid.get_x_size() or y<0 or y>grid.get_y_size()):
+            if(x<0 or x>=grid.get_x_size() or y<0 or y>=grid.get_y_size()):
                 continue
             neighbours.append(grid.get_grid_nodes_arr(x,y))
     return neighbours
 
 def get_distance(node1:Node,node2:Node)->int:
-    return(abs(node1.get_x()-node2.get_x())+abs(node1.get_y()-node2.get_y()))
+    if node1.get_x() == node2.get_x() or node1.get_y() == node2.get_y():
+        # Nodes are in the same row or column
+        return 1
+    else:
+        # Nodes are not in the same row or column
+        return (abs(node1.get_x()-node2.get_x())+abs(node1.get_y()-node2.get_y()))
 
 def minimumMoves(grid, startX, startY, goalX, goalY):
     # Write your code here
-    node_grid_arr=Grid(grid,startX,startY,goalX,goalY)
+    # reverse the coordinates that they give
+    node_grid_arr=Grid(grid,startY,startX,goalY,goalX)
     path=a_star(node_grid_arr)
-    print(path)
+    for p in path:
+        print(p.get_x(), p.get_y())
     return(len(path))
 
 
-
-            
-
-
 if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    #fptr = open(os.environ['OUTPUT_PATH'], 'w')
 
     n = int(input().strip())
 
@@ -207,6 +217,7 @@ if __name__ == '__main__':
 
     result = minimumMoves(grid, startX, startY, goalX, goalY)
 
-    fptr.write(str(result) + '\n')
+    print(result)
+    #fptr.write(str(result) + '\n')
 
-    fptr.close()
+    #fptr.close()
