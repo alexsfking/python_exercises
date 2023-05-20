@@ -85,18 +85,18 @@ class Node:
         return self.__parent
 
 class Grid:
-    def __init__(self, grid_arr:list[list[str]],start_x:int,start_y:int,goal_x:int,goal_y:int) -> None:
+    def __init__(self, grid_arr:list[list[str]],start_row:int,start_col:int,goal_row:int,goal_col:int) -> None:
         self.grid_nodes_arr=[]
-        self.start_x=start_x
-        self.start_y=start_y
-        self.goal_x=goal_x
-        self.goal_y=goal_y
-        self.grid_x_size=len(grid_arr[0])
-        self.grid_y_size=len(grid_arr)
+        self.start_row=start_row
+        self.start_col=start_col
+        self.goal_row=goal_row
+        self.goal_col=goal_col
+        self.grid_row_size=len(grid_arr[0])
+        self.grid_col_size=len(grid_arr)
 
-        for row in range(self.grid_y_size):
+        for row in range(self.grid_col_size):
             temp=[]
-            for col in range(self.grid_x_size):
+            for col in range(self.grid_row_size):
                 temp.append(self.grid_string_to_node(grid_arr[row][col],row,col))
             self.grid_nodes_arr.append(temp)
 
@@ -113,16 +113,16 @@ class Grid:
         return self.grid_nodes_arr[row][col]
 
     def get_start(self)->Node:
-        return self.get_grid_nodes_arr(self.start_x,self.start_y)
+        return self.get_grid_nodes_arr(self.start_row,self.start_col)
     
     def get_goal(self)->Node:
-        return self.get_grid_nodes_arr(self.goal_x,self.goal_y)
+        return self.get_grid_nodes_arr(self.goal_row,self.goal_col)
 
     def get_x_size(self)->int:
-        return self.grid_x_size
+        return self.grid_row_size
     
     def get_y_size(self)->int:
-        return self.grid_y_size
+        return self.grid_col_size
 
 def a_star(grid)->list[Node]:
     open_list=[]
@@ -170,6 +170,9 @@ def get_neighbours(node:Node,grid:Grid)->list[Node]:
                 continue
             x = node.get_x() + dx
             y = node.get_y() + dy
+            if (abs(dx)==abs(dy)):
+                # horizontal and vertical movement only.
+                continue
             if(x<0 or x>=grid.get_x_size() or y<0 or y>=grid.get_y_size()):
                 continue
             neighbours.append(grid.get_grid_nodes_arr(x,y))
@@ -183,14 +186,41 @@ def get_distance(node1:Node,node2:Node)->int:
         # Nodes are not in the same row or column
         return (abs(node1.get_x()-node2.get_x())+abs(node1.get_y()-node2.get_y()))
 
+def calculate_straight_lines_of_movement(path:list[Node])->int:
+    count=0
+    current_direction=None
+    x,y=path[0].get_x(),path[0].get_y()
+    for p in path[1:]:
+        x_temp,y_temp=p.get_x(),p.get_y()
+        if(current_direction):
+            if(current_direction=='x'):
+                if(x!=x_temp):
+                    current_direction='y'
+                    count+=1
+            else:
+                if(y!=y_temp):
+                    current_direction='x'
+                    count+=1
+        else:
+            if(x==x_temp):
+                current_direction='x'
+            else:
+                current_direction='y'
+            count+=1
+        x,y=x_temp,y_temp
+    return count
+
 def minimumMoves(grid, startX, startY, goalX, goalY):
     # Write your code here
-    # reverse the coordinates that they give
-    node_grid_arr=Grid(grid,startY,startX,goalY,goalX)
+    # coordinates are not cartesian
+    start_row,start_col=startX,startY
+    goal_row,goal_col=goalX,goalY
+    node_grid_arr=Grid(grid,start_row,start_col,goal_row,goal_col)
     path=a_star(node_grid_arr)
+
     for p in path:
         print(p.get_x(), p.get_y())
-    return(len(path))
+    return(calculate_straight_lines_of_movement(path))
 
 
 if __name__ == '__main__':
