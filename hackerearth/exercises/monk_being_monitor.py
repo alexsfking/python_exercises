@@ -1,20 +1,19 @@
 t_cases:int=int(input())
 for _ in range(t_cases):
     n_heights:int=int(input())
-    heights_list:list[int]=list(map(int,input().split()))
     heights_dict=dict()
-    for height in heights_list:
-        if(height in heights_dict):
-            heights_dict[height]+=1
+    for height in map(int,input().split()):
+        heights_dict[height] = heights_dict.get(height, 0) + 1
+    sorted_heights_by_heights=sorted(heights_dict.items(),key=lambda x: x[0])
+    
+    min_freq=float('inf')
+    difference=0
+    for height_i, freq_i in sorted_heights_by_heights:
+        if min_freq>freq_i:
+            min_freq=freq_i
         else:
-            heights_dict[height]=1
-    sorted_heights_by_mode=sorted(heights_dict.items(),key=lambda x: x[1],reverse=True)
-    current_max=0
-    for height_i,mode_i in sorted_heights_by_mode:
-        for height_j,mode_j in reversed(sorted_heights_by_mode):
-            if(height_i>height_j and mode_i>mode_j):
-                if(current_max<mode_i-mode_j):
-                    current_max=mode_i-mode_j
-    if(current_max==0):
-        current_max=-1
-    print(current_max)
+            difference=max(difference,freq_i-min_freq)        
+
+    if(difference==0):
+        difference=-1
+    print(difference)
