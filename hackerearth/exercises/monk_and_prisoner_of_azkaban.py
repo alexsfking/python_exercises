@@ -7,40 +7,42 @@ return x+y
 if this is true for no x: x=-1
 and likewise for y
 
-
 '''
-def build_stacks(array:list):
-    x_stack=[]
-    y_stack=[]
-    for i in range(len(array_list)- 1, -1, -1):
-        y_stack.append(array_list[i])
-    return x_stack,y_stack
-
-def get_x(stack:list,a_i:int,index:int):
-    for i in range(len(stack)- 1, -1, -1):
-        if(stack[i]>a_i):
-            return i+1
-    return -1
-
-def get_y(stack:list,a_i:int,index:int):
-    for i in range(len(stack)- 1, -1, -1):
-        if(stack[i]>a_i):
-            return len(stack)-i+index+1
-    return -1
-
 
 size=int(input())
 array_list=list(map(int,input().split()))
-x_stack,y_stack=build_stacks(array_list)
+stack=[]
+x_list=[]
+stack.append((array_list[0],0))
+x_list.append('-1')
+# build x_list
+for i in range(1,len(array_list)):
+    while(stack and stack[-1][0]<=array_list[i]):
+        stack.pop()
+    if(stack):
+        stack.append((array_list[i],stack[-1][1]+1))
+        x_list.append(stack[-1][1]+1)
+    else:
+        stack.append((array_list[i],i))
+        x_list.append(-1)
+
+# build y_list
+stack=[]
+y_list=[]
+stack.append((array_list[-1],len(array_list)-1))
+for i in range(len(array_list)-1,-1,-1):
+    while(stack and stack[-1][0]<=array_list[i]):
+        stack.pop()
+    if(stack):
+        stack.append((array_list[i],stack[-1][1]+1))
+        y_list.append(stack[-1][1]+1)
+    else:
+        stack.append((array_list[i],i))
+        y_list.append(-1)
+
 out=[]
-#x_y=[]
-for i in range(len(array_list)):
-    middle=y_stack.pop()
-    x=get_x(x_stack,array_list[i],i)
-    y=get_y(y_stack,array_list[i],i)
-    x_stack.append(middle)
-    out.append(str(x+y))
-    #x_y.append(str(x)+':'+str(y))
+for i in range(len(x_list)):
+    out.append(str(x_list[i]+y_list[i]))
 
 print(" ".join(out))
-#print(" ".join(x_y))
+
