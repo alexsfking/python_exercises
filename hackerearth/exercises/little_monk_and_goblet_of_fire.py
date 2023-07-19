@@ -9,19 +9,18 @@ class Goblet_queue():
 
         self.create_lead_tracker()
 
-    # just track the index of the first student in each school
+    # just track the order of the first student in each school
     # and the number of students from each school
-    # if 0 new students at the end
-    def create_lead_tracker(self,):
+    # if 0 students in lead school after a dequeue
+    # decrement each of school_queue_lead_indexes
+    def create_lead_tracker(self):
         self.school_queue_lead_indexes=[]
-        for _ in range(self.num_schools):
-            self.school_queue_lead_indexes.append(-1)
-
         self.number_students_queue_by_school=[]
         for _ in range(self.num_schools):
+            self.school_queue_lead_indexes.append(-1)
             self.number_students_queue_by_school.append(0)
 
-    def calculate_lead_index(self,school:int):
+    def calculate_lead_index(self,school:int)->int:
         return max(self.school_queue_lead_indexes)+1
 
     def operation_enqueue(self, operation:str):
@@ -32,12 +31,12 @@ class Goblet_queue():
             self.school_queue_lead_indexes[school]=self.calculate_lead_index(school)
         
     def decrement_lead_indexes(self):
-        for school in range(self.num_schools):
+        for school in range(1,self.num_schools):
             if(self.school_queue_lead_indexes[school]!=-1):
                 self.school_queue_lead_indexes[school]-=1
 
     def operation_dequeue(self):
-        for school in range(self.num_schools):
+        for school in range(1,self.num_schools):
             if(self.school_queue_lead_indexes[school]==0):
                 self.number_students_queue_by_school[school]-=1
                 self.school_queues_list[school].popleft()
@@ -47,7 +46,7 @@ class Goblet_queue():
                     
 
     def get_front_of_queue(self)->tuple:
-        for i in range(self.num_schools):
+        for i in range(1,self.num_schools):
             if(self.school_queue_lead_indexes[i]==0):
                 return((i,self.school_queues_list[i][0]))
 
