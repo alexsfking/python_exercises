@@ -1,3 +1,52 @@
+'''
+***Chat-GPT***
+
+The given code implements a data structure called the "Goblet Queue," which
+manages multiple queues for different schools. Each school has its own queue,
+and there is a lead student in each queue whose turn it is to be dequeued. The
+Goblet Queue supports two main operations: enqueue and dequeue.
+
+Here's a step-by-step explanation of the code:
+
+    The Goblet_queue class is defined to represent the Goblet Queue. It takes the
+    number of schools as input during initialization.
+
+    The Goblet Queue is initialized with the specified number of schools. Separate
+    queues are created for each school using the deque data structure from the
+    collections module.
+
+    The create_lead_tracker method is used to set up data structures to track the
+    lead student in each school's queue and the number of students in each school's
+    queue.
+
+    The operation_enqueue method is used to perform the enqueue operation. It adds a
+    student to the end of the queue of the specified school. If the school's lead
+    index is not set (i.e., no lead student), it calculates the next lead index and
+    sets it for that school.
+
+    The decrement_lead_indexes method is called after a dequeue operation. It
+    decrements the lead index for all schools that have a lead student.
+
+    The operation_dequeue method is used to perform the dequeue operation. It
+    dequeues the lead student from each school's queue, updates the number of
+    students in that school, and calls decrement_lead_indexes if necessary.
+
+    The get_front_of_queue method returns a tuple representing the school number and
+    the roll (student) number of the lead student at the front of the queue.
+
+    The code takes input for the number of operations and the actual operations to
+    be performed on the Goblet Queue. It initializes the Goblet Queue with 5 schools
+    and processes each operation accordingly, either enqueueing or dequeueing
+    students. If it's a dequeue operation, it prints the lead student's school and
+    roll number before dequeuing the student.
+
+Note: The code assumes that the input provided follows the correct format, where
+'E' represents an enqueue operation followed by the school number and roll
+number, and 'D' represents a dequeue operation. Additionally, the lead student's
+index for each school is initialized to -1 when there are no students in the
+queue for that school.
+'''
+
 from collections import deque
 
 class Goblet_queue():
