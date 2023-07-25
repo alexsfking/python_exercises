@@ -2,11 +2,21 @@
 test case
 
 1
-20 4
+20 14
 4 2 8 3 5 9 11 1 13 14 15 12 7 6 19 20 18 17 16 10
-15
+1
+2
+3
 4
+5
+9
 10
+11
+15
+16
+17
+18
+19
 20
 '''
 
@@ -18,10 +28,19 @@ for _ in range(t_num_of_test_cases):
     x=[]
     for _ in range(k):
         x.append(int(input()))
-    result=dict()
+    result_dict=dict()
     #calculate here
     for i in range(len(queue)):
-        pass
+        #left
+        j=i-1
+        while(j>-1 and queue[j]<queue[i]): 
+            j-=1
+        result_dict[i]=i-j-1
+        #right
+        j=i+1
+        while(j<len(queue) and queue[i]>queue[j]): 
+            j+=1
+        result_dict[i]=max(result_dict[i],j-i-1)
     #output results here
     for case in x:
-        print(dict.get(case))
+        print(result_dict.get(case))
