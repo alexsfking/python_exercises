@@ -64,20 +64,22 @@ for _ in range(t_num_of_test_cases):
     test_cases=[]
     for _ in range(k):
         test_cases.append(int(input())-1)
+
     right_list=[0 for x in queue]
     left_list=[0 for x in queue]
-    #calculate here
     stack=[]
+    
+    #calculate here
     for i in range(len(queue)):
-        #right
-        segment_counter=0
+        segment_counter=1
         while(stack and queue[i]>stack[-1][0]):
-            value, segments, index = stack.pop()
+            _, segments, index = stack.pop()
+            left_list[index]=segment_counter
             segment_counter+=segments
-            left_list[index]=i-index
-        stack.append((queue[i],segment_counter+1,i))
-        right_list[i]=segment_counter+1
+        stack.append((queue[i],segment_counter,i))
+        right_list[i]=segment_counter
 
+    #remove remaining elements from the stack
     count=1
     while(stack):
         value, segments, index = stack.pop()
