@@ -27,9 +27,24 @@ is_divisible = lambda x, p: x % p == 0
 
 def calculate(p:int,q:int,some_list:list):
     count=0
-    for x in some_list:
-        if(is_divisible(x,p) or is_divisible(x,q)):
-            count+=1
+    if(p<q):
+        if(is_divisible(p,q)):
+            for x in some_list:
+                if(is_divisible(x,q)):
+                    count+=1
+        else:
+            for x in some_list:
+                if(is_divisible(x,p) or is_divisible(x,q)):
+                    count+=1
+    else:
+        if(is_divisible(q,p)):
+            for x in some_list:
+                if(is_divisible(x,p)):
+                    count+=1
+        else:
+            for x in some_list:
+                if(is_divisible(x,q) or is_divisible(x,p)):
+                    count+=1
     return count
 
 length_a=int(input())
