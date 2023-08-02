@@ -23,37 +23,28 @@ Output Format :
 For each query, print the answer on a new line.
 '''
 
-is_divisible = lambda x, p: x % p == 0
+import math
 
-def calculate(p:int,q:int,some_list:list):
-    count=0
-    if(p<q):
-        if(is_divisible(p,q)):
-            for x in some_list:
-                if(is_divisible(x,q)):
-                    count+=1
-        else:
-            for x in some_list:
-                if(is_divisible(x,p) or is_divisible(x,q)):
-                    count+=1
-    else:
-        if(is_divisible(q,p)):
-            for x in some_list:
-                if(is_divisible(x,p)):
-                    count+=1
-        else:
-            for x in some_list:
-                if(is_divisible(x,q) or is_divisible(x,p)):
-                    count+=1
-    return count
+lcm = lambda a, b: a*b // math.gcd(a, b)
 
-length_a=int(input())
-a_list=list(map(int,input().split()))
-number_of_queries=int(input())
-results_dict=dict()
+length_a=int(input().strip())
+a_list=list(map(int,input().strip().split()))
+maximum=max(a_list)+1
+
+freq=[0 for _ in range(maximum+1)]
+for value in a_list:
+    freq[value]+=1
+
+div=[0 for _ in range(maximum+1)]
+for i in range(1,maximum):
+    for factor in range(i,maximum+1, i):
+        div[i]+=freq[factor]
+
+number_of_queries=int(input().strip())
 for _ in range(number_of_queries):
-    p,q=map(int,input().split())
-    if((p,q) not in results_dict):
-        results_dict[(p,q)]=calculate(p,q,a_list)
-        results_dict[(q,p)]=results_dict[(p,q)]
-    print(results_dict[(p,q)])
+    p,q=map(int,input().strip().split())
+    pq=lcm(p,q)
+    a=div[p] if p<=maximum else 0
+    b=div[q] if q<=maximum else 0
+    ab=div[pq] if pq<=maximum else 0
+    print(a+b-ab)
