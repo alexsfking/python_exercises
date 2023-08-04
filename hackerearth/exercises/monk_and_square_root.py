@@ -18,10 +18,12 @@ Constraints:
 import math
 
 num_cases=int(input().strip())
-primes=[x^2 for x in range(101)]
+squares=[x**2 for x in range(0,500000)]
 for _ in range(num_cases):
     n,m=map(int,input().strip().split())
-    for prime in primes:
-        if(prime%m==n):
-            print(int(math.sqrt(prime)))
+    for i in range(int(math.floor(math.sqrt(n))),m//2+1):
+        if(squares[i]%m==n):
+            print(i)
             break
+    else:
+        print(-1)
