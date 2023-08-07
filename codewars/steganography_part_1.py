@@ -28,7 +28,7 @@ def conceal(msg: str, pixels: list[list[int]]):
     
     bitmasks=[]
     for character in msg:
-        bitmask='0'+bin(ord(character))[2:]
+        bitmask=bin(ord(character))[2:].zfill(8)
         for bit in bitmask:
             bitmasks.append(bit)
 
@@ -38,15 +38,14 @@ def conceal(msg: str, pixels: list[list[int]]):
             for j,colour in enumerate(rgb):
                 pixels[i][j]=int(bin(colour)[:-1]+bitmasks[index],2)
                 index+=1
-                if(index==len(bitmasks)):
-                    return pixels
-        else:
+                if index == len(bitmasks): return pixels
+
+        else: # if this rgb contains a blue bit that we do not modify
             for j,colour in enumerate(rgb):
                 if((j)!=2):
                     pixels[i][j]=int(bin(colour)[:-1]+bitmasks[index],2)
                     index+=1
-                    if(index==len(bitmasks)):
-                        return pixels
+                    if index == len(bitmasks): return pixels
 
     return pixels
 
