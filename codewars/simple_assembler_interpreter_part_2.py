@@ -31,61 +31,33 @@ class SimpleAssembler():
     def parse_instructions(self,instructions:list[str]):
         index:int=0
         while(index<len(instructions)):
-            self.parse_instruction(instructions[index],index)
-            index+=1
-
-            
-            match instructions[index][:4]:
-                case "mov":
-                    self.mov(instructions[index][4:])
-                case "inc":
-                    self.inc(instructions[index][4])
-                case "dec":
-                    self.dec(instructions[index][4])
-                case "add":
-                    self.add(instructions[index][4:])
-                case "sub":
-                    self.sub(instructions[index][4:])
-                case "mul":
-                    self.mul(instructions[index][4:])
-                case "div":
-                    self.div(instructions[index][4:])
-                case "jmp":
-                    self.jmp(instructions[index][4:])
-                case "cmp":
-                    self.cmp(instructions[index][4:])
-                case "je ":
-                    self.je(instructions[index][3:])
-                case "jge":
-                    self.jge(instructions[index][4:])
-                case "jg ":
-                    self.jg(instructions[index][3:])
-                case "jge":
-                    self.jge(instructions[index][4:])
-                case "jle":
-                    self.jle(instructions[index][4:])
-                case "jl ":
-                    self.jl(instructions[index][3:])
-                case "ret":
-                    self.ret(instructions[index][4:])
-                case "msg":
-                    self.msg(instructions[index][4:])
-                case "end":
-                    self.end(instructions[index][4:])
+            return_string,return_value=self.parse_instruction(instructions[index],index)
+            if(return_string or return_value):
+                match return_string:
+                    case 'jmp':
+                        index=self.labels_dict[return_value]-1
+                    case 'cmp':
+                        compare=return_value
+                        raise NotImplementedError
+                    case 'call':
+                        raise NotImplementedError
+                    case 'ret':
+                        raise NotImplementedError
             index+=1
 
     def parse_instruction(self,instruction:str,index):
         if not instruction or instruction.startswith(';'):
-            return
+            return index
         parts=instruction.split()
         if(len(parts)<2):
             if(len(parts)==1 and self.is_label(parts[0])):
                 self.set_label(parts[0][:-1],index)
-            return
+            return index
         
         if(parts[0] in self.instruction_set):
             self.instruction_set[parts[0]](parts[1:])
-
+        else:
+            raise NotImplementedError
         
     def is_label(self, possible_label: str) -> bool:
         return bool(self.label_pattern.match(possible_label))
@@ -128,6 +100,38 @@ class SimpleAssembler():
             self.registers_dict[parts[0]]//=self.registers_dict[parts[1]]
         else:
             self.registers_dict[parts[0]]//=int(parts[1])
+
+    def jmp(self,parts:list[str])->None:
+        raise NotImplementedError
+        
+    def cmp(self,parts:list[str])->None:
+        raise NotImplementedError
+    
+    def jne(self,parts:list[str])->None:
+        raise NotImplementedError
+    
+    def je(self,parts:list[str])->None:
+        raise NotImplementedError
+
+    def jge(self,parts:list[str])->None:
+        raise NotImplementedError
+
+    def jg(self,parts:list[str])->None:
+        raise NotImplementedError
+
+    '''
+        def jle(self,parts:list[str])->None:
+
+        def jl(self,parts:list[str])->None:
+
+        def call(self,parts:list[str])->None:
+
+        def ret(self,parts:list[str])->None:
+
+        def msg(self,parts:list[str])->None:
+        
+    '''
+
 
     '''
     def jnz(self,index,instruction:str)->int:
