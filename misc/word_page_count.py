@@ -3,6 +3,10 @@ import sys
 import zipfile
 import xml.dom.minidom
 
+'''
+python word_page_count.py /path/to/your/directory
+'''
+
 def count_pages_in_docx(file_path):
     try:
         document = zipfile.ZipFile(file_path)
