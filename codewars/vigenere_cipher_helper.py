@@ -1,17 +1,14 @@
 class VigenereCipher(object):
     def __init__(self, key, alphabet):
         self.key=key
+        self.alphabet=alphabet
         self.alphabet_set=set(alphabet)
-        self.first=ord(alphabet[0])
-        self.last=ord(alphabet[-1])
         self.alphabet_length=len(alphabet)
-        '''
-        print(alphabet,self.alphabet_length)
-        checking=[]
-        for c in alphabet:
-            checking.append(ord(c))
-        print(checking)
-        '''
+        self.alphabet_char_to_index_dict=dict()
+        for i,c in enumerate(alphabet):
+            self.alphabet_char_to_index_dict[c]=i
+        self.first=0
+        self.last=self.alphabet_char_to_index_dict[alphabet[-1]]
     
     def cyclic_letter_generator(self, string):
         index = 0
@@ -27,10 +24,10 @@ class VigenereCipher(object):
             if(c not in self.alphabet_set):
                 out.append(c)
                 continue
-            temp=ord(c)+ord(key_letter)-self.first
-            if(temp>self.last):
-                temp-=self.alphabet_length
-            out.append(chr(temp))
+            index=self.alphabet_char_to_index_dict[c]+self.alphabet_char_to_index_dict[key_letter]
+            if(index>self.last):
+                index-=self.alphabet_length
+            out.append(self.alphabet[index])
         return ''.join(out)
     
     def decode(self, text:str):
@@ -41,10 +38,10 @@ class VigenereCipher(object):
             if(c not in self.alphabet_set):
                 out.append(c)
                 continue
-            temp=ord(c)-(ord(key_letter)-self.first)
+            temp=self.alphabet_char_to_index_dict[c]-self.alphabet_char_to_index_dict[key_letter]
             if(temp<self.first):
                 temp+=self.alphabet_length
-            out.append(chr(temp))
+            out.append(self.alphabet[temp])
         return ''.join(out)
     
 
@@ -60,3 +57,13 @@ print(c.decode('laxxhsj'), 'waffles')
 
 print(c.encode('CODEWARS'), 'CODEWARS')
 print(c.decode('CODEWARS'), 'CODEWARS')
+
+abc = "アイウエオァィゥェォカキクケコサシスセソタチツッテトナニヌネノハヒフヘホマミムメモヤャユュヨョラリルレロワヲンー"
+key = "カタカナ"
+c = VigenereCipher(key, abc)
+
+print(c.encode('カタカナ'), 'タモタワ')
+print(c.decode('タモタワ'), 'カタカナ')
+
+print(c.encode('ドモアリガトゴザイマス'), 'ドオカセガヨゴザキアニ')
+print(c.decode('ドオカセガヨゴザキアニ'), 'ドモアリガトゴザイマス')
