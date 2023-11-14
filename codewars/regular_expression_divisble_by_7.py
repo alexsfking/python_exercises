@@ -10,15 +10,10 @@ Your solution should reject strings with any character other than 0 and 1.
 No leading 0's will be tested unless the string exactly denotes 0.
 '''
 
-def sevens(start:int,end:int):
-    for i in range(start,end):
-        print(bin(7*i)[2:].zfill(16))
+solution = r'^(0|1((1(01*00)*01*01|(0|1(01*00)*01*011)((0|1(1|0(01*00)*01*01))1)*(0|1(1|0(01*00)*01*01)))0)*(1|(0|1(01*00)*01*011)((0|1(1|0(01*00)*01*01))1)*10)(01*00)*1)+$'
 
-
-print(sevens(1,250))
-
-
-'''dfa divisble by 7
+r'''
+dfa divisble by 7
 \documentclass[12pt]{article}
 \usepackage{tikz}
 
@@ -89,16 +84,5 @@ print(sevens(1,250))
 \end{center}
 
 \end{document}
-'''
 
-
-'''
-equations
-q0=q0a+q3b+ epsilon
-q1=q0b+q4b
-q2=q1a+q4b
-q3=q1b+q5a
-q4=q5b+q2a
-q5=q2b+q6a
-q6=q3a+q6b
 '''
