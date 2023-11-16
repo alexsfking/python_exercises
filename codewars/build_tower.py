@@ -22,7 +22,7 @@ And a tower with 6 floors looks like this:
 ]
 '''
 
-def tower_builder(n_floors):
+def tower_builder(n_floors:int)->list:
     out=[]
     length=(n_floors-1)*2+1
     for i in range(n_floors):
