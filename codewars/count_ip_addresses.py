@@ -11,10 +11,7 @@ Examples
 '''
 
 def ip_str_to_int(ip:str)->int:
-    temp=[]
-    for octect in ip.split('.'):
-        temp.append(bin(int(octect))[2:].zfill(8))
-    return int(''.join(temp),2)
+    return int(''.join([bin(int(octet))[2:].zfill(8) for octet in ip.split('.')]),2)
 
 def ips_between(start:str, end:str)->int:
     return ip_str_to_int(end)-ip_str_to_int(start)
