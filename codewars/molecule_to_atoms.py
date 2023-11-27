@@ -55,12 +55,16 @@ def remove_brackets(formula:str)->str:
                 start_index=i
                 break
     end_index = formula.index(closing_bracket,i)
-    for j in range(end_index+1,len(formula)):
-        if not formula[j].isdigit():
-            multiplier = int(formula[end_index+1:j])
-            break
-    if(not multiplier):
-        multiplier = int(formula[end_index+1:])
+    if(not formula[end_index+1].isdigit()):
+        multiplier=1
+        return formula[:start_index]+formula[start_index+1:end_index]*multiplier+formula[end_index+1:]
+    else:
+        for j in range(end_index+1,len(formula)):
+            if not formula[j].isdigit():
+                multiplier = int(formula[end_index+1:j])
+                break
+        if(not multiplier):
+            multiplier = int(formula[end_index+1:])
     return formula[:start_index]+formula[start_index+1:end_index]*multiplier+formula[end_index+1+len(str(multiplier)):]
 
 def remove_numbers(formula:str)->str:
@@ -116,6 +120,7 @@ def parse_molecule (formula:str)->dict:
     return atom_count_dict
 
 
+print(parse_molecule("(C5H5)Fe(CO)2CH3"))
 print(parse_molecule("C6H12O6"))
 print(parse_molecule("K4[ON(SO3)2]2"))
 print(parse_molecule("Mg(OH)2"))
