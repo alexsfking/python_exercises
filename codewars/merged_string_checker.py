@@ -19,14 +19,17 @@ part2:    o   e   a r s   = oears
 '''
 
 def is_merge(string:str, part1:str, part2:str)->bool:
-    i,j,k = 0,0,0
-    while i<len(part1) and j<len(part2) and k<len(string):
-        if string[k] == part1[i]:
-            i +=1
-            k +=1
-        elif string[k] == part2[j]:
-            j +=1
-            k +=1
-        else:
-            return False
-    return True
+    if not string and not part1 and not part2: return True
+    if not string: return False
+
+    if part1 and string[0] == part1[0]:
+        if is_merge(string[1:], part1[1:], part2): return True
+    if part2 and string[0] == part2[0]:
+        if is_merge(string[1:], part1, part2[1:]): return True
+
+    return False
+
+print(is_merge('codewars', 'code', 'wars') == True)
+print(is_merge('codewars', 'cdw', 'oears') == True)
+print(is_merge('codewars', 'cod', 'wars') == False)
+print(is_merge("Bananas from Bahamas", "Bahas", "Bananas from am") == True)
