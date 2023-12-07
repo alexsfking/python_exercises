@@ -11,6 +11,7 @@ last_digit(2 ** 200, 2 ** 300)  # returns 6
 '''
 
 cycle_dict = {
+    0: [0],
     1: [1],
     2: [4, 8, 6, 2],
     3: [9, 7, 1, 3],
@@ -22,15 +23,22 @@ cycle_dict = {
     9: [1, 9]
 }
 
-def calculate(number:int) -> int:
-    return str(number)[-1]
-
 def last_digit(n1:int, n2:int) -> int:
-    n1 = calculate(n1)
-    n2 = calculate(n2)
-    print(n1,n2)
-    return 0
+    if n2 == 0: return 1
+    last_digit_n1 = int(str(n1)[-1])
+    current_index = cycle_dict[last_digit_n1].index(last_digit_n1)
+    calculated_index = (n2 - 1 + current_index) % len(cycle_dict[last_digit_n1])
+    return cycle_dict[last_digit_n1][calculated_index]
 
+
+for n1, n2, exp in [
+                    (4, 1, 4),
+                    (4, 2, 6),
+                    (9, 7, 9),
+                    (10, 10 ** 10, 0),
+                    (2 ** 200, 2 ** 300, 6),
+                    (3715290469715693021198967285016729344580685479654510946723, 68819615221552997273737174557165657483427362207517952651, 7)]:
+    print(last_digit(n1, n2) == exp, f"Testing last_digit({n1}, {n2})")
 
 '''
     current_index = cycle_dict[base].index(base)
