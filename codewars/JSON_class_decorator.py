@@ -30,18 +30,23 @@ MyClass.an_int == 5
 MyClass.this_kata_is_awesome == True
 '''
 
-def jsonattr(filepath):
-    def wrapper(cls):
-        def inner_wrapper(cls):
-                def __init__(self, *args, **kwargs):
-                    super().__init__(*args, **kwargs)
-                    self._file_path = file_path
-                    self._load_state()
+import json
 
-                def _load_state(self):
-                    try:
-                        with open(self._file_path, 'r') as file:
-                            state = json.load(file)
-                            self.__dict__.update(state)
-                    except (FileNotFoundError, json.JSONDecodeError):
-                        pass
+def jsonattr(file_path:str):
+    def decorator(cls:type) -> type:
+        try:
+            with open(file_path, 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File not found: {file_path}")
+        except json.JSONDecodeError:
+            raise ValueError(f"Invalid JSON in file: {file_path}")
+        
+        for key, value in data.items():
+            setattr(cls, key, value)
+        return cls
+    return decorator
+
+@jsonattr("/tmp/myClass.json")
+class MyClass:
+    pass
