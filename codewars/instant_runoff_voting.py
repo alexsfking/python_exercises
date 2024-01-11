@@ -21,36 +21,64 @@ haven't heard of IRV, here's a basic overview (slightly altered for this kata):
 '''
 
 
-def runoff(voters:list[list[str]]) -> str | None:
-    tally = dict()
-    initial = '019384489283489234759238174412434534534zx@d6344'
-    available_candidates = set(initial)
-    eliminated_candidates = set()
-    total_votes = len(voters)
-    fifty_percent = (total_votes // 2)
-    winning_candidate = False
-    while not winning_candidate and len(available_candidates) > 0:
-        available_candidates.discard(initial)
-        for voter in voters:
-            for i, vote in enumerate(voter):
-                if vote not in eliminated_candidates:
-                    if vote in tally: tally[vote] += 1
-                    else: 
-                        tally[vote] = 1
-                        available_candidates.add(vote)
-                    break
-        print(f'available candidates = {available_candidates}')
-        print(f'tally.values() = {tally.values()}')
-        max_value = max(tally.values())
-        if max_value > fifty_percent:
-            max_keys = [key for key, value in tally.items() if value == max_value]
-            print(f'max keys = {max_keys}')
+class Election:
+    def __init__(self, voters:list[list[str]]) -> None:
+        self.voters: list[list[str]] = voters
+        self.tally: dict[str, int] = {}
+        self.available_candidates: set[str] = set()
+        self.total_votes: int = len(voters)
+        self.fifty_percent: int = self.total_votes // 2
+
+    def begin(self) -> str | None:
+        self.initial_count()
+        winner = self.get_winner()
+        if(winner): return winner
+        self.eliminate_candidates()
+        while len(self.available_candidates) > 0:
+            self.count_votes()
+            winner = self.get_winner()
+            if(winner): return winner
+            self.eliminate_candidates()
+        return None
+
+    def initial_count(self):
+        for voter in self.voters:
+            for vote in voter:
+                if vote in self.tally: self.tally[vote] += 1
+                else: 
+                    self.tally[vote] = 1
+                    self.available_candidates.add(vote)
+                break
+
+    def get_winner(self) -> str | None:
+        max_value = max(self.tally.values())
+        if max_value > self.fifty_percent:
+            max_keys = [key for key, value in self.tally.items() if value == max_value]
             return max(max_keys)
-        
-        min_value = min(tally.values())
-        min_keys = [key for key, value in tally.items() if value == min_value]
+        return None
+    
+    def eliminate_candidates(self):
+        min_value = min(self.tally.values())
+        min_keys = [key for key, value in self.tally.items() if value == min_value]
         for candidate in min_keys:
-            eliminated_candidates.add(candidate)
-            del(tally[candidate])
-            available_candidates.remove(candidate)
-    return None
+            self.available_candidates.remove(candidate)
+
+    def count_votes(self):
+        self.tally = dict()
+        for voter in self.voters:
+            for vote in voter:
+                if vote in self.available_candidates:
+                    if vote in self.tally: self.tally[vote] += 1
+                    else: self.tally[vote] = 1
+                    break
+
+def runoff(voters:list[list[str]]) -> str | None:
+    election = Election(voters)
+    return election.begin()
+
+
+tests = []
+tests.append([['Daisuke Aramaki', 'Lex Luthor', 'Abelt Dessler', 'Johan Liebert', 'Reinhard von Musel', 'Gihren Zabi'], ['Johan Liebert', 'Reinhard von Musel', 'Gihren Zabi', 'Daisuke Aramaki', 'Lex Luthor', 'Abelt Dessler'], ['Reinhard von Musel', 'Lex Luthor', 'Abelt Dessler', 'Daisuke Aramaki', 'Johan Liebert', 'Gihren Zabi'], ['Abelt Dessler', 'Daisuke Aramaki', 'Gihren Zabi', 'Lex Luthor', 'Johan Liebert', 'Reinhard von Musel'], ['Abelt Dessler', 'Johan Liebert', 'Gihren Zabi', 'Lex Luthor', 'Daisuke Aramaki', 'Reinhard von Musel'], ['Johan Liebert', 'Gihren Zabi', 'Daisuke Aramaki', 'Reinhard von Musel', 'Abelt Dessler', 'Lex Luthor']])
+#tests.append([['Drake Luft', 'Reinhard von Musel', 'Johan Liebert', 'Brian J. Mason', 'Daisuke Aramaki', 'Abelt Dessler'], ['Reinhard von Musel', 'Drake Luft', 'Daisuke Aramaki', 'Johan Liebert', 'Abelt Dessler', 'Brian J. Mason'], ['Johan Liebert', 'Brian J. Mason', 'Drake Luft', 'Daisuke Aramaki', 'Reinhard von Musel', 'Abelt Dessler'], ['Reinhard von Musel', 'Brian J. Mason', 'Drake Luft', 'Daisuke Aramaki', 'Johan Liebert', 'Abelt Dessler'], ['Daisuke Aramaki', 'Abelt Dessler', 'Drake Luft', 'Reinhard von Musel', 'Johan Liebert', 'Brian J. Mason'], ['Drake Luft', 'Brian J. Mason', 'Reinhard von Musel', 'Johan Liebert', 'Abelt Dessler', 'Daisuke Aramaki']])
+for test in tests:
+    print(runoff(test))
