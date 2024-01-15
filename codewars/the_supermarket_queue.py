@@ -39,33 +39,20 @@ more-computer-science-related idea of a thread pool, with relation to running
 multiple processes at the same time: https://en.wikipedia.org/wiki/Thread_pool
 '''
 
-def count_calls(func):
-    def wrapper(*args, **kwargs):
-        wrapper.calls +=1
-        return func(*args, **kwargs)
-    
-    wrapper.calls = 0
-
-    def get_call_count():
-        return wrapper.calls
-    
-    wrapper.get_call_count = get_call_count
-    return wrapper
-    
-
 class Supermarket_Queue:
     def __init__(self, customer_times:list[int], n_tills:int) -> None:
         self.customer_times = customer_times[::-1]
         self.n_tills = n_tills
         self.tills_list = [Till() for _ in range(n_tills)]
+        self.__time_taken = 0
 
     def allocate_customers(self):
         for till in self.tills_list:
             if till.is_free() and len(self.customer_times):
                 till.new_customer(self.customer_times.pop())
-
-    @count_calls
+    
     def move_time_forward(self):
+        self.__time_taken += 1
         for till in self.tills_list:
             till.decrement_time()
 
@@ -73,6 +60,15 @@ class Supermarket_Queue:
         while len(self.customer_times):
             self.allocate_customers()
             self.move_time_forward()
+        time_to_add = 0
+        for till in self.tills_list:
+            if till.transaction_time > time_to_add:
+                time_to_add = till.transaction_time
+        self.__time_taken += time_to_add
+
+    @property
+    def time_taken(self) -> int:
+        return self.__time_taken
 
 class Till:
     def __init__(self, transaction_time:int = 0) -> None:
@@ -92,7 +88,38 @@ class Till:
 def queue_time(customer_times:list[int], n_tills:int) -> int:
     supermarket = Supermarket_Queue(customer_times, n_tills)
     supermarket.start_day()
-    return supermarket.move_time_forward.get_call_count()
+    return supermarket.time_taken
+    
 
-print(queue_time([1,2,3,4,5], 1) == 15)
-print(queue_time([1,2,3,4,5], 5) == 5)
+print(queue_time([1,2,3,4,5], 1), 15)
+print(queue_time([1,2,3,4,5], 5), 5)
+print(queue_time([2,2,3,3,4,4], 2), 9)
+
+
+'''
+Decorator
+
+def count_calls(func):
+    def wrapper(*args, **kwargs):
+        wrapper.calls +=1
+        return func(*args, **kwargs)
+    
+    wrapper.calls = 0
+
+    def get_call_count():
+        return wrapper.calls
+    
+    wrapper.get_call_count = get_call_count
+    return wrapper
+
+def queue_time(customer_times:list[int], n_tills:int) -> int:
+    supermarket = Supermarket_Queue(customer_times, n_tills)
+    supermarket.start_day()
+    return supermarket.move_time_forward.get_call_count() # + time_to_add
+
+
+    @count_calls
+    def move_time_forward(self):
+        for till in self.tills_list:
+            till.decrement_time()
+'''
