@@ -37,6 +37,5 @@ Good luck and enjoy!
 def wave(people:str) -> list[str]:
     out = []
     for i, p in enumerate(people):
-        if p.isalnum
-        out.append(people[:i] + p.capitalize() + people[i+1:])
+        if p.isalpha(): out.append(people[:i] + p.capitalize() + people[i+1:])
     return out
