@@ -11,11 +11,4 @@ be 7.
 '''
 
 def sum_two_smallest_numbers(numbers:list[int]) -> int:
-    count, total = 0,0
-    for number in sorted(numbers):
-        if number > 0:
-            count += 1
-            total += number
-        if count == 2:
-            break
-    return total
+    return sum(sorted(numbers)[:2])
