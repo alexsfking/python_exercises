@@ -67,9 +67,3 @@ class Solution:
                 j += 1
                 previous = nums[i]
         nums[:] = nums[:j]
-
-a = [0,1,2,2,3,0,4,2]
-b = 2
-s = Solution()
-print(s.removeElement(a,b))
-print(a)
