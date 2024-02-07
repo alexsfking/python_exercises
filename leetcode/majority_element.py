@@ -26,13 +26,18 @@ n == nums.length
 Follow-up: Could you solve the problem in linear time and in O(1) space?
 '''
 
-from collections import Counter
-
 class Solution:
     def majorityElement(self, nums: list[int]) -> int:
-        c = Counter(nums)
-        for k, _ in c.most_common(1):
-            return k
+        count, majority = 0, None
+        for num in nums:
+            if count == 0:
+                majority = num
+                count += 1
+            elif majority == num:
+                count += 1
+            else:
+                count -= 1
+        return majority
 
 a = [2,2,1,1,1,2,2]
 s = Solution()
